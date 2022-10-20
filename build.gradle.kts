@@ -26,15 +26,15 @@ dependencies {
 }*/
 
 tasks.withType<KotlinCompile> {
-  kotlinOptions.jvmTarget = "1.8"
+  kotlinOptions.jvmTarget = "11"
 }
 
 val jar by tasks.getting(Jar::class) {
-  archiveFileName.set("chatemotes-nostdlib.jar")
+  archiveFileName.set("ChatEmotes-nostdlib.jar")
 }
 
-val fatJar = task("fatJar", type = Jar::class) {
-  archiveFileName.set("chatemotes.jar")
+val fatJar: Jar = task("fatJar", type = Jar::class) {
+  archiveFileName.set("ChatEmotes.jar")
   from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }) {
     exclude("META-INF", "META-INF/**")
   }
