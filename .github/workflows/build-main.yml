@@ -32,4 +32,4 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: ChatEmotes plugin jars
-          path: build/libs/*.jar
+          path: build/libs/ChatEmotes.jar
