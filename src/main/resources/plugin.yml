@@ -2,7 +2,7 @@ name: ChatEmotes
 version: 1.0
 main: me.apyr.chatemotes.ChatEmotes
 commands:
-  em:
+  emote:
     description: List and manage chat emotes
-    aliases: [emote, e]
+    aliases: [e, em]
     usage: /<command>

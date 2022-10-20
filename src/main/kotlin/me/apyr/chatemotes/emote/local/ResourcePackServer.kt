@@ -72,8 +72,7 @@ internal class ResourcePackServer {
       }
 
       response.setStatusCode(HttpStatus.SC_OK)
-      val body = ByteArrayEntity(resourcePack, ContentType.APPLICATION_OCTET_STREAM)
-      response.entity = body
+      response.entity = ByteArrayEntity(resourcePack, ContentType.APPLICATION_OCTET_STREAM)
     }
   }
 

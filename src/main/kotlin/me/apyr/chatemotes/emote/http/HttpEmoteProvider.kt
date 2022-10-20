@@ -58,7 +58,7 @@ class HttpEmoteProvider : EmoteProvider {
         }
     }
     return ResourcePackInfo(
-      url = settings.httpUrlsPackDownload().replace("{hash}", hash),
+      url = settings.httpUrlsPackDownload() + "?h=$hash",
       sha1 = hash.decodeHex()
     )
   }

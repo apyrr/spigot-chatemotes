@@ -4,7 +4,7 @@ plugins {
   kotlin("jvm") version "1.7.20"
 }
 
-group = "my.apyr"
+group = "me.apyr"
 version = "1.0"
 
 repositories {

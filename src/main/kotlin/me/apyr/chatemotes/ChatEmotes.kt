@@ -5,7 +5,7 @@ import me.apyr.chatemotes.emote.EmoteProvider
 import me.apyr.chatemotes.emote.ResourcePackInfo
 import me.apyr.chatemotes.emote.http.HttpEmoteProvider
 import me.apyr.chatemotes.emote.local.LocalEmoteProvider
-import me.apyr.chatemotes.util.StringUtils.hex
+import me.apyr.chatemotes.util.StringUtils.toHex
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -95,7 +95,7 @@ class ChatEmotes : JavaPlugin() {
 
   fun announceResourcePack() {
     val info: ResourcePackInfo = resourcePackInfo ?: return
-    val sha1: String = info.sha1.hex()
+    val sha1: String = info.sha1.toHex()
     if (sha1 == lastAnnouncedResourcePackHash) {
       return
     }

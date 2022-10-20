@@ -1,23 +1,28 @@
 emote-provider:
-  # local | http
+  # what emote provider to use: 'local' or 'http'
+  # emote provider is responsible for emote management and resource pack generation
   use: local
+
+  # settings for local emote provider
   local:
-    # Resource pack generator
+    # resource pack generator
     pack:
       prompt: Chat emotes!
       height: 10
       ascent: 7
-    # Minecraft server hostname override (set to disable auto detection)
+    # minecraft server hostname override (set to disable auto detection)
     hostname-override: null
-    # Resource pack server
+    # resource pack server
     http.port: 25765
+
+  # settings for http emote provider
   http:
     headers:
       user-agent: chatemotes/1.0
+      # authorization: token
     urls:
       emotes:
-        # HTTP GET
-        # return [{ "name": "Kappa", "char": "§" }]
+        # HTTP GET <- [{ "name": "Kappa", "char": "§" }]
         list: http://localhost:8080/emotes
 
         # HTTP PUT -> { "name": "Kappa", "url": "https://..." }
@@ -26,7 +31,6 @@ emote-provider:
         # HTTP DELETE
         delete: http://localhost:8080/emote/{name}
       pack:
-        download: http://localhost:8080/chat_emotes.zip?h={hash}
-        # HTTP GET
-        # return { "hash": "..." }
-        hash: http://localhost:8080/resource-pack-hash
+        download: http://localhost:8080/resource_pack.zip
+        # HTTP GET <- { "hash": "..." }
+        hash: http://localhost:8080/hash

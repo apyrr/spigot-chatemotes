@@ -19,6 +19,17 @@ object EmoteResolver {
     Regex("""^https://betterttv.com/emotes/(\w+)""") to { "https://cdn.betterttv.net/emote/${it[1]}/2x" }
   )
 
+  private val pngMagic: ByteArray = byteArrayOf(
+    0x89.toByte(),
+    0x50.toByte(),
+    0x4E.toByte(),
+    0x47.toByte(),
+    0x0D.toByte(),
+    0x0A.toByte(),
+    0x1A.toByte(),
+    0x0A.toByte()
+  )
+
   fun resolve(url: String): ByteArray {
     val finalUrl: String = urlHandlers.firstNotNullOfOrNull { (pattern, transform) ->
       pattern.find(url)?.let { transform(it.groupValues) }
@@ -31,11 +42,9 @@ object EmoteResolver {
       .build()
 
     val response: HttpResponse<ByteArray> = http.send(request, HttpResponse.BodyHandlers.ofByteArray())
-    require(response.statusCode() == 200) { "Invalid response code: ${response.statusCode()}" }
-
-    if (response.statusCode() == 200) {
-      return response.body()
-    }
+    check(response.statusCode() == 200) { "Invalid response code: ${response.statusCode()}" }
+    check(response.body().size <= 256 * 1024) { "Emote is too large (${response.body().size / 1024} KB)" }
+    check(response.body().take(8).toByteArray().contentEquals(pngMagic)) { "Emote is not a PNG image" }
 
     return response.body()
   }

@@ -16,10 +16,7 @@ internal object ResourcePackGenerator {
     val zip = ZipOutputStream(out)
 
     fun putEntry(path: String, data: ByteArray) {
-      val e = ZipEntry(path).apply {
-        time = 0
-      }
-      zip.putNextEntry(e)
+      zip.putNextEntry(ZipEntry(path).apply { time = 0 })
       zip.write(data, 0, data.size)
       zip.closeEntry()
     }
@@ -28,8 +25,7 @@ internal object ResourcePackGenerator {
     putEntry("assets/minecraft/font/default.json", generateFontJson(sortedEmotes).toByteArray())
 
     for (emote: LocalEmote in sortedEmotes) {
-      val fileName = emote.name.lowercase() + ".png"
-      putEntry("assets/minecraft/textures/font/$fileName", emote.image)
+      putEntry("assets/minecraft/textures/font/${emoteFileName(emote)}", emote.image)
     }
 
     zip.close()
@@ -48,7 +44,7 @@ internal object ResourcePackGenerator {
 
     val providers = emotes.map { e ->
       Provider(
-        file = "minecraft:font/${e.name.lowercase()}.png",
+        file = "minecraft:font/${emoteFileName(e)}",
         height = ChatEmotes.getInstance().settings.resourcePackHeight(),
         ascent = ChatEmotes.getInstance().settings.resourcePackAscent(),
         chars = listOf(e.char)
@@ -57,4 +53,8 @@ internal object ResourcePackGenerator {
 
     return gson.toJson(mapOf("providers" to providers))
   }
+
+  private fun emoteFileName(emote: Emote): String = emote.name
+    .lowercase()
+    .replace(Regex("""[^a-z0-9/._-]"""), "_") + ".png"
 }

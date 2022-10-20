@@ -6,7 +6,7 @@ import me.apyr.chatemotes.emote.ResourcePackInfo
 import me.apyr.chatemotes.util.CustomConfig
 import me.apyr.chatemotes.util.HashUtils.sha1
 import me.apyr.chatemotes.util.MinecraftUtils
-import me.apyr.chatemotes.util.StringUtils.hex
+import me.apyr.chatemotes.util.StringUtils.toHex
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -75,7 +75,7 @@ class LocalEmoteProvider : EmoteProvider {
     val hash: ByteArray = pack.sha1()
     packServer.updateResourcePack(pack)
 
-    return ResourcePackInfo("http://${hostname}:${port}/chat_emotes.zip?h=${hash.hex()}", hash)
+    return ResourcePackInfo("http://${hostname}:${port}/chat_emotes.zip?h=${hash.toHex()}", hash)
   }
 
   /*override fun refresh() {
