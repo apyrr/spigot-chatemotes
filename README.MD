@@ -1,7 +1,7 @@
 # ChatEmotes
 Use custom chat emotes in Minecraft, like on Twitch. Based on server resource packs.
 
-Build: `./gradlew fatJar`
+Build: `./gradlew build`
 
 ### Usage
 * `/emote` - list emotes
