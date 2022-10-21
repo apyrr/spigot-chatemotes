@@ -19,6 +19,8 @@ class ListCommand : ChatEmotesCommand {
   override val description: String = "list all emotes"
   override val usage: String = "[page]"
 
+  private val pageSize: Int = 14
+
   override fun onCommand(sender: CommandSender, args: List<String>) {
     val allEmotes = plugin.emotes.values
 
@@ -28,14 +30,30 @@ class ListCommand : ChatEmotesCommand {
     }
 
     val currentPage: Int = max(0, (args.getOrNull(0)?.toIntOrNull() ?: 1) - 1)
-    val totalPages: Int = allEmotes.size / 15
-    val emotes: List<Emote> = allEmotes.asSequence().drop(currentPage * 15).take(15).toList()
+    val totalPages: Int = allEmotes.size / pageSize
+    val emotes: List<Emote> = allEmotes.asSequence().drop(currentPage * pageSize).take(pageSize).toList()
 
     if (emotes.isEmpty()) {
       return
     }
 
-    sender.spigot().sendMessage(
+    emotes
+      .foldIndexed(ComponentBuilder()) { index, builder, emote ->
+        if (index == 0) {
+          builder.append("\n")
+        }
+        builder
+          .append("\n${emote.char} ", ComponentBuilder.FormatRetention.EVENTS)
+          .append("- ${emote.name}").color(ChatColor.GRAY)
+          .event(ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, emote.char))
+          .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click to copy")))
+      }
+      .create()
+      .also {
+        sender.spigot().sendMessage(*it)
+      }
+
+    /*sender.spigot().sendMessage(
       *emotes.fold(ComponentBuilder("\n")) { builder, emote ->
         builder
           .append(
@@ -54,31 +72,31 @@ class ListCommand : ChatEmotesCommand {
           )
           .append(" ".repeat(3), ComponentBuilder.FormatRetention.NONE)
       }.create()
-    )
+    )*/
 
     sender.spigot().sendMessage(
       *ComponentBuilder()
         .apply {
+          append("\n")
           if (currentPage >= 1) {
-            append(
-              TextComponent("←  ").apply {
-                color = ChatColor.GRAY
-                clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote list $currentPage")
-              }
-            ).bold(true)
+            append("←  ")
+              .color(ChatColor.GRAY)
+              .bold(true)
+              .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote list $currentPage"))
+              .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click too see previous page")))
+          } else {
+            append("    ")
           }
 
           append("[page ${currentPage + 1} / ${totalPages + 1}]", ComponentBuilder.FormatRetention.NONE)
             .color(ChatColor.GRAY)
 
           if (currentPage < totalPages) {
-            append(
-              TextComponent("  →").apply {
-                color = ChatColor.GRAY
-                clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote list ${currentPage + 2}")
-              },
-              ComponentBuilder.FormatRetention.NONE
-            ).bold(true)
+            append("  →")
+              .color(ChatColor.GRAY)
+              .bold(true)
+              .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote list ${currentPage + 2}"))
+              .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click too see next page")))
           }
         }
         .create()
