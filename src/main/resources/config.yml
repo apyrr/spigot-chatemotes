@@ -9,7 +9,7 @@ emote-provider:
     pack:
       prompt: Chat emotes!
       height: 10
-      ascent: 7
+      ascent: 8
     # minecraft server hostname override (set to disable auto detection)
     hostname-override: null
     # resource pack server

@@ -1,16 +1,22 @@
 package me.apyr.chatemotes
 
+import me.apyr.chatemotes.commands.*
 import me.apyr.chatemotes.emote.Emote
 import me.apyr.chatemotes.emote.EmoteProvider
 import me.apyr.chatemotes.emote.ResourcePackInfo
 import me.apyr.chatemotes.emote.http.HttpEmoteProvider
 import me.apyr.chatemotes.emote.local.LocalEmoteProvider
+import me.apyr.chatemotes.exceptions.InvalidCommandArgumentException
 import me.apyr.chatemotes.util.StringUtils.toHex
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
+import org.bukkit.command.Command
+import org.bukkit.command.CommandExecutor
+import org.bukkit.command.CommandSender
+import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
@@ -21,6 +27,15 @@ class ChatEmotes : JavaPlugin() {
   }
 
   val settings: ChatEmotesSettings = ChatEmotesSettings(config)
+
+  private val commands: Map<String, ChatEmotesCommand> = listOf(
+    ListCommand(),
+    AddCommand(),
+    DelCommand(),
+    RefreshCommand(),
+    ReloadCommand(),
+    SendPackCommand()
+  ).associateBy { it.name }
 
   private lateinit var emoteProvider: EmoteProvider
 
@@ -39,24 +54,14 @@ class ChatEmotes : JavaPlugin() {
     saveConfig()
 
     initEmoteProvider()
+    refreshEmotes()
 
     server.pluginManager.registerEvents(EventListener(), this)
 
-    // TODO: rework commands
     getCommand("emote")?.apply {
-      setExecutor(EmoteCommand())
-      setTabCompleter { sender, _, _, args ->
-        return@setTabCompleter if (args.size <= 1) {
-          val base = listOf("list")
-          if (sender.hasPermission(ChatEmotesPermission.MANAGE)) {
-            base + listOf("add", "del", "refresh", "reloadconfig")
-          } else {
-            base
-          }
-        } else {
-          emptyList()
-        }
-      }
+      val command = EmoteCommand()
+      setExecutor(command)
+      tabCompleter = command
     }
   }
 
@@ -143,5 +148,58 @@ class ChatEmotes : JavaPlugin() {
     private lateinit var instance: ChatEmotes
     internal fun getInstance(): ChatEmotes = instance
     internal fun getLogger(): Logger = instance.logger
+  }
+
+  private inner class EmoteCommand : CommandExecutor, TabCompleter {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+      val subcommandName: String? = args.firstOrNull()?.takeIf { it.isNotEmpty() }
+
+      // send all commands
+      if (subcommandName == null) {
+        sender.spigot().sendMessage(
+          *commands.values
+            .filter { !it.isShadow }
+            .fold(ComponentBuilder()) { builder, subcommand ->
+              val usage: String = subcommand.usage?.let { " $it" } ?: ""
+              val cmd = TextComponent("/$label ${subcommand.name}${usage}").apply {
+                color = ChatColor.GRAY
+                isBold = true
+                clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$label ${subcommand.name}")
+              }
+              builder
+                .append("\n")
+                .append(cmd, ComponentBuilder.FormatRetention.NONE)
+                .append(" - ${subcommand.description}", ComponentBuilder.FormatRetention.NONE)
+                .color(ChatColor.GRAY)
+            }.create()
+        )
+        return true
+      }
+
+      val subcommand = commands[subcommandName] ?: return true
+      try {
+        subcommand.onCommand(sender, args.drop(1))
+      } catch (_: InvalidCommandArgumentException) {
+        sender.spigot().sendMessage(
+          TextComponent("Usage: /$label $subcommandName ${subcommand.usage}").apply { color = ChatColor.GRAY }
+        )
+      }
+      return true
+    }
+
+    override fun onTabComplete(
+      sender: CommandSender,
+      command: Command,
+      label: String,
+      args: Array<out String>
+    ): List<String> {
+      if (args.size <= 1) {
+        return commands.values.filter { it.hasPermission(sender) }.map { it.name }
+      }
+
+      val firstArg = args.firstOrNull() ?: return emptyList()
+      val subCommand = commands[firstArg] ?: return emptyList()
+      return subCommand.onTabComplete(sender, args.drop(1))
+    }
   }
 }

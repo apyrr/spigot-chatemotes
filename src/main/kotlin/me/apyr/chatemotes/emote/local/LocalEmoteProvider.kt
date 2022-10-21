@@ -47,7 +47,7 @@ class LocalEmoteProvider : EmoteProvider {
   override fun addEmote(name: String, url: String) {
     val emotes = getEmotes()
     val occupiedEmojis: Set<String> = emotes.values.map { it.char }.toSet()
-    val nextEmoji: String = (MinecraftUtils.SUPPORTED_EMOJI - occupiedEmojis).random()
+    val nextEmoji: String = (MinecraftUtils.SUPPORTED_EMOJI - occupiedEmojis).randomOrNull() ?: return
     val image: ByteArray = EmoteResolver.resolve(url)
 
     emotes
