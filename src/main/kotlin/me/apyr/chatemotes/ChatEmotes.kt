@@ -77,6 +77,7 @@ class ChatEmotes : JavaPlugin() {
   }
 
   fun reload() {
+    reloadConfig()
     initEmoteProvider()
   }
 
