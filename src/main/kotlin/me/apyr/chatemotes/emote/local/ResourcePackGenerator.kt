@@ -10,6 +10,7 @@ import java.util.zip.ZipOutputStream
 internal object ResourcePackGenerator {
   private val gson = Gson()
 
+  // TODO: handle emotes with duplicate names
   fun generate(emotes: List<LocalEmote>): ByteArray {
     val sortedEmotes = emotes.sortedBy { it.char }
     val out = ByteArrayOutputStream(512 * 1024)

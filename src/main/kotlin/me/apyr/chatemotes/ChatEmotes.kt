@@ -20,9 +20,11 @@ class ChatEmotes : JavaPlugin() {
 
   private lateinit var emoteProvider: EmoteProvider
 
+  // cached emotes
   var emotes: Map<String, Emote> = emptyMap()
     private set
 
+  // cached resource pack
   var resourcePackInfo: ResourcePackInfo? = null
     private set
 
@@ -36,6 +38,7 @@ class ChatEmotes : JavaPlugin() {
 
     server.pluginManager.registerEvents(EventListener(), this)
 
+    // TODO: rework commands
     getCommand("emote")?.apply {
       setExecutor(EmoteCommand())
       setTabCompleter { sender, _, _, args ->
@@ -54,6 +57,11 @@ class ChatEmotes : JavaPlugin() {
   }
 
   private fun initEmoteProvider() {
+    // disable previous emote provider
+    if (this::emoteProvider.isInitialized) {
+      emoteProvider.onDisable()
+    }
+
     emoteProvider = when (settings.emoteProvider()) {
       "local" -> LocalEmoteProvider()
       "http" -> HttpEmoteProvider()
@@ -69,7 +77,6 @@ class ChatEmotes : JavaPlugin() {
   }
 
   fun reload() {
-    emoteProvider.onDisable()
     initEmoteProvider()
   }
 
@@ -97,6 +104,7 @@ class ChatEmotes : JavaPlugin() {
     val info: ResourcePackInfo = resourcePackInfo ?: return
     val sha1: String = info.sha1.toHex()
     if (sha1 == lastAnnouncedResourcePackHash) {
+      logger.info("Resource pack didn't change, skipping announcement")
       return
     }
     logger.info("Announcing resource pack: ${resourcePackInfo?.url}")

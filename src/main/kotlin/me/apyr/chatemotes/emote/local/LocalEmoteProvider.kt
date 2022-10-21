@@ -20,8 +20,6 @@ import java.util.logging.Level
 
 class LocalEmoteProvider : EmoteProvider {
   private val store: CustomConfig = CustomConfig("local_emotes.yml")
-  // private var emotes: Map<String, LocalEmote> = emptyMap()
-  // private var resourcePackHash: ByteArray? = null
 
   private val packServer: ResourcePackServer = ResourcePackServer()
   private val loginListener: LoginListener = LoginListener()
@@ -52,14 +50,16 @@ class LocalEmoteProvider : EmoteProvider {
     val nextEmoji: String = (MinecraftUtils.SUPPORTED_EMOJI - occupiedEmojis).random()
     val image: ByteArray = EmoteResolver.resolve(url)
 
-    val newEmotes: Map<String, LocalEmote> = emotes
+    emotes
       .toMutableMap()
       .apply { set(name, LocalEmote(name = name, char = nextEmoji, image = image)) }
-    saveToFile(newEmotes.values)
+      .also { saveToFile(it.values) }
   }
 
   override fun deleteEmote(name: String) {
-    saveToFile(getEmotes().filterKeys { it == name }.values)
+    getEmotes()
+      .filterKeys { it == name }
+      .also { saveToFile(it.values) }
   }
 
   override fun getResourcePackInfo(): ResourcePackInfo? {
@@ -77,30 +77,6 @@ class LocalEmoteProvider : EmoteProvider {
 
     return ResourcePackInfo("http://${hostname}:${port}/chat_emotes.zip?h=${hash.toHex()}", hash)
   }
-
-  /*override fun refresh() {
-    store.reload()
-
-    emotes = store.getFileConfiguration()
-      .getMapList("emotes")
-      .mapIndexedNotNull { index, map ->
-        try {
-          val name: String = checkNotNull(map["name"] as? String) { "name is null" }
-          val char: String = checkNotNull(map["char"] as? String) { "char is null" }
-          val imageBase64: String = checkNotNull(map["image"] as? String) { "image is null" }
-          val image: ByteArray = Base64.getDecoder().decode(imageBase64)
-
-          LocalEmote(name = name, char = char, image = image)
-        } catch (e: Exception) {
-          ChatEmotes.getLogger().log(Level.WARNING, "Failed to convert emote #$index", e)
-          null
-        }
-      }
-      .associateBy { it.name }
-
-    saveToFile(emotes.values)
-    regeneratePack()
-  }*/
 
   override fun onEnable() {
     packServer.start(ChatEmotes.getInstance().settings.httpPort())
@@ -126,14 +102,6 @@ class LocalEmoteProvider : EmoteProvider {
     store.getFileConfiguration().set("emotes", map)
     store.save()
   }
-
-  /*private fun regeneratePack() {
-    if (emotes.isNotEmpty()) {
-      val pack: ByteArray = ResourcePackGenerator.generate(emotes.values.toList())
-      resourcePackHash = pack.sha1()
-      packServer.updateResourcePack(pack)
-    }
-  }*/
 
   companion object {
     // this hostname is used to serve the resource pack
