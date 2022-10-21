@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender
 
 class ReloadCommand : ChatEmotesCommand {
   override val name: String = "reloadconfig"
-  override val description: String = "Reload config and emote provider"
+  override val description: String = "reload config and emote provider"
 
   override fun onCommand(sender: CommandSender, args: List<String>) {
     ChatEmotes.getInstance().reload()

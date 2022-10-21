@@ -156,23 +156,19 @@ class ChatEmotes : JavaPlugin() {
 
       // send all commands
       if (subcommandName == null) {
-        sender.spigot().sendMessage(
-          *commands.values
-            .filter { !it.isShadow }
-            .fold(ComponentBuilder()) { builder, subcommand ->
-              val usage: String = subcommand.usage?.let { " $it" } ?: ""
-              val cmd = TextComponent("/$label ${subcommand.name}${usage}").apply {
-                color = ChatColor.GRAY
-                isBold = true
-                clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$label ${subcommand.name}")
-              }
-              builder
-                .append("\n")
-                .append(cmd, ComponentBuilder.FormatRetention.NONE)
-                .append(" - ${subcommand.description}", ComponentBuilder.FormatRetention.NONE)
-                .color(ChatColor.GRAY)
-            }.create()
-        )
+        for (subcommand in commands.values.filter { !it.isShadow }) {
+          val usage: String = subcommand.usage?.let { " $it" } ?: ""
+          val cmd = TextComponent("/$label ${subcommand.name}${usage}").apply {
+            color = ChatColor.GRAY
+            isBold = true
+            clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$label ${subcommand.name}")
+          }
+          ComponentBuilder(cmd)
+            .append(" - ${subcommand.description}", ComponentBuilder.FormatRetention.NONE)
+            .color(ChatColor.GRAY)
+            .create()
+            .also { sender.spigot().sendMessage(*it) }
+        }
         return true
       }
 
