@@ -3,6 +3,7 @@ package me.apyr.chatemotes.emote.local
 import com.google.gson.Gson
 import me.apyr.chatemotes.ChatEmotes
 import me.apyr.chatemotes.emote.Emote
+import me.apyr.chatemotes.util.StringUtils.toHex
 import java.io.ByteArrayOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
@@ -55,7 +56,5 @@ internal object ResourcePackGenerator {
     return gson.toJson(mapOf("providers" to providers))
   }
 
-  private fun emoteFileName(emote: Emote): String = emote.name
-    .lowercase()
-    .replace(Regex("""[^a-z0-9/._-]"""), "_") + ".png"
+  private fun emoteFileName(emote: Emote): String = emote.name.toByteArray().toHex() + ".png"
 }
