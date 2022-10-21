@@ -40,11 +40,13 @@ class HttpEmoteProvider : EmoteProvider {
       .checkErrors()
   }
 
-  override fun deleteEmote(name: String) {
+  override fun deleteEmote(name: String): Boolean {
     val request: HttpRequest = request(settings.httpUrlsEmotesDelete().replace("{name}", name)).DELETE().build()
     httpClient
       .send(request, HttpResponse.BodyHandlers.ofString())
       .checkErrors()
+
+    return true
   }
 
   override fun getResourcePackInfo(): ResourcePackInfo {

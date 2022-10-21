@@ -6,6 +6,7 @@ Build: `./gradlew build`
 ### Usage
 * `/emote` - list emotes
 * `/emote list`
+* `/emote setsign <1-4> <text>` - modify text on a sign
 * `/emote add <name> <url>`
 * `/emote del <name>`
 * `/emote refresh` - refresh emotes and announce resource pack to all players

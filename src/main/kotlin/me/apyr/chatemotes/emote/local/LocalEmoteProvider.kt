@@ -56,10 +56,15 @@ class LocalEmoteProvider : EmoteProvider {
       .also { saveToFile(it.values) }
   }
 
-  override fun deleteEmote(name: String) {
-    getEmotes()
-      .filterKeys { it == name }
-      .also { saveToFile(it.values) }
+  override fun deleteEmote(name: String): Boolean {
+    val emotes = getEmotes()
+
+    if (!emotes.containsKey(name)) {
+      return false
+    }
+
+    emotes.filterKeys { it == name }.also { saveToFile(it.values) }
+    return true
   }
 
   override fun getResourcePackInfo(): ResourcePackInfo? {

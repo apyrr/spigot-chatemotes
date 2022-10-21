@@ -16,16 +16,16 @@ class DelCommand : ChatEmotesCommand {
   override fun onCommand(sender: CommandSender, args: List<String>) {
     val name: String = checkArgument(args.getOrNull(0))
 
-    if (!ChatEmotes.getInstance().emotes.containsKey(name)) {
-      sender.spigot().sendMessage(TextComponent("Emote does not exists").apply { color = ChatColor.RED })
-      return
-    }
+    val success: Boolean = ChatEmotes.getInstance().getEmoteProvider().deleteEmote(name)
 
-    ChatEmotes.getInstance().getEmoteProvider().deleteEmote(name)
-    sender.spigot().sendMessage(
-      TextComponent("Emote successfully deleted. Use '/emote refresh' to announce the resource pack")
-        .apply { color = ChatColor.GREEN }
-    )
+    if (success) {
+      sender.spigot().sendMessage(
+        TextComponent("Emote successfully deleted. Use '/emote refresh' to announce the resource pack")
+          .apply { color = ChatColor.GREEN }
+      )
+    } else {
+      sender.spigot().sendMessage(TextComponent("Emote does not exists").apply { color = ChatColor.RED })
+    }
   }
 
   override fun onTabComplete(sender: CommandSender, args: List<String>): List<String> {
