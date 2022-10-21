@@ -134,7 +134,10 @@ class LocalEmoteProvider : EmoteProvider {
           ChatEmotes.getLogger().info("Found valid hostname for this server: $hostname")
 
           Bukkit.getScheduler().runTask(ChatEmotes.getInstance(), Runnable {
-            ChatEmotes.getInstance().refreshEmotes()
+            ChatEmotes.getInstance().apply {
+              refreshEmotes()
+              sendResourcePack()
+            }
             PlayerLoginEvent.getHandlerList().unregister(this)
           })
         }

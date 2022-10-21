@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
 class EmoteCommand : CommandExecutor {
   private val plugin: ChatEmotes = ChatEmotes.getInstance()
@@ -30,9 +31,10 @@ class EmoteCommand : CommandExecutor {
       )
       sender.spigot().sendMessage(
         *emotes.fold(ComponentBuilder()) { builder, emote ->
-          val text = TextComponent(emote.char)
-          text.clickEvent = ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, emote.char)
-          text.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(emote.name ))
+          val text = TextComponent(emote.char).apply {
+            clickEvent = ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, emote.char)
+            hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(emote.name ))
+          }
           builder
             .append(text, ComponentBuilder.FormatRetention.NONE)
             .append("  ", ComponentBuilder.FormatRetention.NONE)
@@ -45,9 +47,7 @@ class EmoteCommand : CommandExecutor {
         return
       }
       plugin.refreshEmotes()
-      sender.spigot().sendMessage(
-        TextComponent("Successfully refreshed all emotes and resource pack").apply { color = ChatColor.GREEN }
-      )
+      plugin.announceResourcePack()
     }
 
     fun reload() {
@@ -91,8 +91,9 @@ class EmoteCommand : CommandExecutor {
 
     when (args.firstOrNull()) {
       "list" -> list()
+      "sendpack" -> (sender as? Player)?.also { plugin.sendResourcePack(it) }
       "refresh" -> refresh()
-      "reload" -> reload()
+      "reloadconfig" -> reload()
       "add" -> addEmote()
       "del" -> delEmote()
       null -> list()

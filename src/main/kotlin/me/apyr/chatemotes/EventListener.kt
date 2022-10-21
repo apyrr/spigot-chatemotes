@@ -10,7 +10,7 @@ class EventListener : Listener {
 
   @EventHandler
   fun onJoin(e: PlayerJoinEvent) {
-    ChatEmotes.getInstance().announceResourcePack(e.player)
+    ChatEmotes.getInstance().sendResourcePack(e.player)
   }
 
   @EventHandler

@@ -6,6 +6,10 @@ import me.apyr.chatemotes.emote.ResourcePackInfo
 import me.apyr.chatemotes.emote.http.HttpEmoteProvider
 import me.apyr.chatemotes.emote.local.LocalEmoteProvider
 import me.apyr.chatemotes.util.StringUtils.toHex
+import net.md_5.bungee.api.ChatColor
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.ComponentBuilder
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -45,7 +49,7 @@ class ChatEmotes : JavaPlugin() {
         return@setTabCompleter if (args.size <= 1) {
           val base = listOf("list")
           if (sender.hasPermission(ChatEmotesPermission.MANAGE)) {
-            base + listOf("add", "del", "refresh", "reload")
+            base + listOf("add", "del", "refresh", "reloadconfig")
           } else {
             base
           }
@@ -69,7 +73,6 @@ class ChatEmotes : JavaPlugin() {
     }
 
     emoteProvider.onEnable()
-    refreshEmotes()
   }
 
   override fun onDisable() {
@@ -90,8 +93,6 @@ class ChatEmotes : JavaPlugin() {
       logger.info("Loaded ${emotes.size} emotes from ${emoteProvider::class.simpleName}:")
       logger.info(emotes.values.joinToString(", ") { it.name })
     }
-
-    announceResourcePack()
   }
 
   fun getEmoteProvider(): EmoteProvider = emoteProvider
@@ -102,22 +103,40 @@ class ChatEmotes : JavaPlugin() {
   }
 
   fun announceResourcePack() {
-    val info: ResourcePackInfo = resourcePackInfo ?: return
+    val info: ResourcePackInfo = resourcePackInfo
+      ?: return logger.warning("Failed to announce resource pack, resourcePackInfo is null")
+
     val sha1: String = info.sha1.toHex()
     if (sha1 == lastAnnouncedResourcePackHash) {
       logger.info("Resource pack didn't change, skipping announcement")
       return
     }
+
     logger.info("Announcing resource pack: ${resourcePackInfo?.url}")
-    for (player: Player in Bukkit.getOnlinePlayers()) {
-      player.setResourcePack(info.url, info.sha1, settings.resourcePackPrompt())
-    }
+    server.spigot().broadcast(
+      *ComponentBuilder()
+        .append("New emotes are available!\n").color(ChatColor.GREEN).bold(true)
+        .append(
+          TextComponent("Click here to apply resource pack.").apply {
+            isUnderlined = true
+            clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote sendpack")
+          }
+        )
+        .create()
+    )
     lastAnnouncedResourcePackHash = sha1
   }
 
-  fun announceResourcePack(player: Player) {
+  fun sendResourcePack(player: Player) {
     val info: ResourcePackInfo = resourcePackInfo ?: return
     player.setResourcePack(info.url, info.sha1, settings.resourcePackPrompt())
+  }
+
+  fun sendResourcePack() {
+    val info: ResourcePackInfo = resourcePackInfo ?: return
+    for (player: Player in Bukkit.getOnlinePlayers()) {
+      player.setResourcePack(info.url, info.sha1, settings.resourcePackPrompt())
+    }
   }
 
   companion object {
