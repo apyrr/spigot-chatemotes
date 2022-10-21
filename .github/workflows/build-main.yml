@@ -43,11 +43,14 @@ jobs:
               tag_name: '1.' + process.env.GITHUB_RUN_NUMBER,
             });
 
-            await github.rest.repos.uploadReleaseAsset({
+            const uploadAsset = (name, path) => github.rest.repos.uploadReleaseAsset({
               owner: context.repo.owner,
               repo: context.repo.repo,
               origin: release.data.upload_url,
               release_id: release.data.id,
-              name: 'ChatEmotes.jar',
-              data: fs.readFileSync('build/libs/ChatEmotes.jar')
+              name: name,
+              data: fs.readFileSync(path)
             });
+
+            await uploadAsset('ChatEmotes.jar', 'build/libs/ChatEmotes.jar');
+            await uploadAsset('ChatEmotes-nostdlib.jar', 'build/libs/ChatEmotes-nostdlib.jar');
