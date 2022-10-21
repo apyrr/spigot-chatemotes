@@ -63,7 +63,7 @@ class LocalEmoteProvider : EmoteProvider {
       return false
     }
 
-    emotes.filterKeys { it == name }.also { saveToFile(it.values) }
+    emotes.filterKeys { it != name }.also { saveToFile(it.values) }
     return true
   }
 
