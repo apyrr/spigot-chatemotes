@@ -38,19 +38,21 @@ class ListCommand : ChatEmotesCommand {
     sender.spigot().sendMessage(
       *emotes.fold(ComponentBuilder("\n")) { builder, emote ->
         builder
+          .append(TextComponent(emote.char))
           .append(
-            TextComponent("${emote.char} ${emote.name}").apply {
+            TextComponent(" ${emote.name}").apply {
               color = ChatColor.GRAY
               clickEvent = ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, emote.char)
               hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click to copy"))
-            }
+            },
+            ComponentBuilder.FormatRetention.NONE
           )
-          .append("    ", ComponentBuilder.FormatRetention.NONE)
+          .append(" ".repeat(3), ComponentBuilder.FormatRetention.NONE)
       }.create()
     )
 
     sender.spigot().sendMessage(
-      *ComponentBuilder("                         ")
+      *ComponentBuilder(" ".repeat(25))
         .apply {
           if (currentPage >= 1) {
             append(

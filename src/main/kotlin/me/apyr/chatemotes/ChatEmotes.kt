@@ -34,7 +34,8 @@ class ChatEmotes : JavaPlugin() {
     DelCommand(),
     RefreshCommand(),
     ReloadCommand(),
-    SendPackCommand()
+    SendPackCommand(),
+    SetSignCommand()
   ).associateBy { it.name }
 
   private lateinit var emoteProvider: EmoteProvider
@@ -190,7 +191,7 @@ class ChatEmotes : JavaPlugin() {
       args: Array<out String>
     ): List<String> {
       if (args.size <= 1) {
-        return commands.values.filter { it.hasPermission(sender) }.map { it.name }
+        return commands.values.filter { !it.isShadow && it.hasPermission(sender) }.map { it.name }
       }
 
       val firstArg = args.firstOrNull() ?: return emptyList()

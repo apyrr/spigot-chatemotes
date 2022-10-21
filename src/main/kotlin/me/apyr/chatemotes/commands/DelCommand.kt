@@ -15,6 +15,12 @@ class DelCommand : ChatEmotesCommand {
 
   override fun onCommand(sender: CommandSender, args: List<String>) {
     val name: String = checkArgument(args.getOrNull(0))
+
+    if (!ChatEmotes.getInstance().emotes.containsKey(name)) {
+      sender.spigot().sendMessage(TextComponent("Emote does not exists").apply { color = ChatColor.RED })
+      return
+    }
+
     ChatEmotes.getInstance().getEmoteProvider().deleteEmote(name)
     sender.spigot().sendMessage(
       TextComponent("Emote successfully deleted. Use '/emote refresh' to announce the resource pack")
