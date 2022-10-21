@@ -9,4 +9,4 @@ Build: `./gradlew build`
 * `/emote add <name> <url>`
 * `/emote del <name>`
 * `/emote refresh` - refresh emotes and announce resource pack to all players
-* `/emote reload` - reload config and emote provider
+* `/emote reloadconfig` - reload config and emote provider
