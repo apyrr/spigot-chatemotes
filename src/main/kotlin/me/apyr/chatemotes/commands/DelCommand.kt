@@ -5,6 +5,8 @@ import me.apyr.chatemotes.ChatEmotesCommand
 import me.apyr.chatemotes.ChatEmotesPermission
 import me.apyr.chatemotes.hasPermission
 import net.md_5.bungee.api.ChatColor
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.command.CommandSender
 
@@ -20,8 +22,17 @@ class DelCommand : ChatEmotesCommand {
 
     if (success) {
       sender.spigot().sendMessage(
-        TextComponent("Emote successfully deleted. Use '/emote refresh' to announce the resource pack")
-          .apply { color = ChatColor.GREEN }
+        *ComponentBuilder("Emote successfully deleted. ")
+          .color(ChatColor.GREEN)
+          .append(
+            TextComponent("Click here").apply {
+              isUnderlined = true
+              clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote refresh")
+            }
+          )
+          .append(" to announce the resource pack", ComponentBuilder.FormatRetention.NONE)
+          .color(ChatColor.GREEN)
+          .create()
       )
     } else {
       sender.spigot().sendMessage(TextComponent("Emote does not exists").apply { color = ChatColor.RED })
