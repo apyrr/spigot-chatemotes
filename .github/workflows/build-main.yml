@@ -28,8 +28,26 @@ jobs:
       - name: Execute Gradle build
         run: ./gradlew build
 
-      - name: Upload jars to GitHub
-        uses: actions/upload-artifact@master
+      - name: Create release
+        uses: actions/github-script@v6
         with:
-          name: ChatEmotes plugin jars
-          path: build/libs/*.jar
+          script: |
+            const fs = require('fs');
+
+            const release = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              draft: false,
+              generate_release_notes: true,
+              prerelease: true,
+              tag_name: '1.' + process.env.GITHUB_RUN_NUMBER,
+            });
+
+            await github.rest.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              origin: release.data.upload_url,
+              release_id: release.data.id,
+              name: 'ChatEmotes.jar',
+              data: fs.readFileSync('build/libs/ChatEmotes.jar')
+            });
