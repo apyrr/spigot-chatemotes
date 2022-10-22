@@ -16,7 +16,7 @@ object EmoteResolver {
     Regex("""^(https://cdn.7tv.app/emote/\w+/)""") to { it[1] + "2x.png" },
     Regex("""^https://7tv.app/emotes/(\w+)""") to { "https://cdn.7tv.app/emote/${it[1]}/2x.png" },
 
-    Regex("""^(https://cdn.betterttv.net/emote/\w+)""") to { it[1] + "2x" },
+    Regex("""^(https://cdn.betterttv.net/emote/\w+/)""") to { it[1] + "2x" },
     Regex("""^https://betterttv.com/emotes/(\w+)""") to { "https://cdn.betterttv.net/emote/${it[1]}/2x" },
 
     Regex("""^(https://cdn.frankerfacez.com/emoticon/\w+/)""") to { it[1] + "2" },

@@ -1,5 +1,6 @@
 name: ChatEmotes
 version: 1.0
+api-version: 1.19
 main: me.apyr.chatemotes.ChatEmotes
 commands:
   emote:
