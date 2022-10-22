@@ -46,7 +46,7 @@ class ListCommand : ChatEmotesCommand {
           .append("\n${emote.char} ", ComponentBuilder.FormatRetention.NONE)
           .append("- ${emote.name}").color(ChatColor.GRAY)
           .event(ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, emote.char))
-          .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click to copy")))
+          .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click to copy ${emote.char}")))
       }
       .create()
       .also {
