@@ -67,6 +67,20 @@ class LocalEmoteProvider : EmoteProvider {
     return true
   }
 
+  override fun renameEmote(old: String, new: String): Boolean {
+    val emotes = getEmotes().toMutableMap()
+    if (emotes.containsKey(new)) {
+      return false
+    }
+
+    val emote: LocalEmote = emotes[old] ?: return false
+    emotes.remove(old)
+    emotes[new] = emote.copy(name = new)
+    saveToFile(emotes.values)
+
+    return true
+  }
+
   override fun getResourcePackInfo(): ResourcePackInfo? {
     val emotes = getEmotes()
     if (emotes.isEmpty()) {

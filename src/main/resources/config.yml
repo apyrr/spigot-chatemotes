@@ -30,6 +30,9 @@ emote-provider:
 
         # HTTP DELETE
         delete: http://localhost:8080/emote/{name}
+
+        # HTTP POST -> { "name": "NewEmoteName" }
+        rename: http://localhost:8080/emote/{name}
       pack:
         download: http://localhost:8080/resource_pack.zip
         # HTTP GET <- { "hash": "..." }

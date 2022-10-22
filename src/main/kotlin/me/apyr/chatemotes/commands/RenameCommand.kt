@@ -10,19 +10,20 @@ import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.command.CommandSender
 
-class DelCommand : ChatEmotesCommand {
-  override val name: String = "del"
-  override val description: String = "delete an emote"
-  override val usage: String = "<name>"
+class RenameCommand : ChatEmotesCommand {
+  override val name: String = "rename"
+  override val description: String = "rename an emote"
+  override val usage: String = "<old> <new>"
 
   override fun onCommand(sender: CommandSender, args: List<String>) {
-    val name: String = checkArgument(args.getOrNull(0))
+    val old: String = checkArgument(args.getOrNull(0))
+    val new: String = checkArgument(args.getOrNull(1))
 
-    val success: Boolean = ChatEmotes.getInstance().getEmoteProvider().deleteEmote(name)
+    val success: Boolean = ChatEmotes.getInstance().getEmoteProvider().renameEmote(old, new)
 
     if (success) {
       sender.spigot().sendMessage(
-        *ComponentBuilder("Emote was successfully deleted. ")
+        *ComponentBuilder("Emote was successfully renamed to $new. ")
           .color(ChatColor.GREEN)
           .append(
             TextComponent("Click here").apply {
@@ -35,13 +36,16 @@ class DelCommand : ChatEmotesCommand {
           .create()
       )
     } else {
-      sender.spigot().sendMessage(TextComponent("Emote does not exists").apply { color = ChatColor.RED })
+      sender.spigot().sendMessage(
+        TextComponent("Emote does not exists or new name is already taken").apply { color = ChatColor.RED }
+      )
     }
   }
 
   override fun onTabComplete(sender: CommandSender, args: List<String>): List<String> {
     return when {
-      args.size == 1 && args[0].isEmpty() -> listOf("<name>")
+      args.size == 1 && args[0].isEmpty() -> ChatEmotes.getInstance().emotes.values.map { it.name }
+      args.size == 2 && args[1].isEmpty() -> listOf("<new>")
       else -> emptyList()
     }
   }

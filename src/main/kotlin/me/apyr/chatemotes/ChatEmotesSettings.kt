@@ -23,6 +23,7 @@ class ChatEmotesSettings(private val config: FileConfiguration) {
   fun httpUrlsEmotesList(): String = config.getString("emote-provider.http.urls.emotes.list")!!
   fun httpUrlsEmotesAdd(): String = config.getString("emote-provider.http.urls.emotes.add")!!
   fun httpUrlsEmotesDelete(): String = config.getString("emote-provider.http.urls.emotes.delete")!!
+  fun httpUrlsEmotesRename(): String = config.getString("emote-provider.http.urls.emotes.rename")!!
   fun httpUrlsPackDownload(): String = config.getString("emote-provider.http.urls.pack.download")!!
   fun httpUrlsPackHash(): String = config.getString("emote-provider.http.urls.pack.hash")!!
 }

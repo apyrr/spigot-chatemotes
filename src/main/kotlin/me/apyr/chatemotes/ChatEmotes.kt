@@ -34,6 +34,8 @@ class ChatEmotes : JavaPlugin() {
     DelCommand(),
     RefreshCommand(),
     ReloadCommand(),
+    RenameCommand(),
+    SearchCommand(),
     SendPackCommand(),
     SetSignCommand()
   ).associateBy { it.name }

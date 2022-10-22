@@ -32,8 +32,7 @@ class HttpEmoteProvider : EmoteProvider {
   }
 
   override fun addEmote(name: String, url: String) {
-    data class Request(val name: String, val url: String)
-    val body = gson.toJson(Request(name = name, url = url))
+    val body = gson.toJson(mapOf("name" to name, "url" to url))
     val request: HttpRequest = request(settings.httpUrlsEmotesAdd()).PUT(BodyPublishers.ofString(body)).build()
     httpClient
       .send(request, HttpResponse.BodyHandlers.ofString())
@@ -46,6 +45,17 @@ class HttpEmoteProvider : EmoteProvider {
       .send(request, HttpResponse.BodyHandlers.ofString())
       .checkErrors()
 
+    return true
+  }
+
+  override fun renameEmote(old: String, new: String): Boolean {
+    val body = gson.toJson(mapOf("name" to new))
+    val request: HttpRequest = request(settings.httpUrlsEmotesRename().replace("{name}", old))
+      .POST(BodyPublishers.ofString(body))
+      .build()
+    httpClient
+      .send(request, HttpResponse.BodyHandlers.ofString())
+      .checkErrors()
     return true
   }
 

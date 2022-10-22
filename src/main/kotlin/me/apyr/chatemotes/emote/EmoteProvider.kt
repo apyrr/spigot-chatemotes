@@ -4,6 +4,7 @@ interface EmoteProvider {
   fun getEmotes(): Map<String, Emote>
   fun addEmote(name: String, url: String)
   fun deleteEmote(name: String): Boolean
+  fun renameEmote(old: String, new: String): Boolean
   fun getResourcePackInfo(): ResourcePackInfo?
 
   fun onEmoteRefresh() {}

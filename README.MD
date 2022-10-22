@@ -4,10 +4,4 @@ Use custom chat emotes in Minecraft, like on Twitch. Based on server resource pa
 Build: `./gradlew build`
 
 ### Usage
-* `/emote` - list emotes
-* `/emote list`
-* `/emote setsign <1-4> <text>` - modify text on a sign
-* `/emote add <name> <url>`
-* `/emote del <name>`
-* `/emote refresh` - refresh emotes and announce resource pack to all players
-* `/emote reloadconfig` - reload config and emote provider
+Type `/emote` or `/em` or `/e` to list all commands and their usage
