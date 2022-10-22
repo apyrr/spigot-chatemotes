@@ -21,11 +21,20 @@ class EventListener : Listener {
 
     val emotes: Map<String, Emote> = ChatEmotes.getInstance().emotes.takeIf { it.isNotEmpty() } ?: return
 
-    val name: String = e.player.displayName
-    val formatted: String = formatMessage(name, emotes)
+    e.player.displayName.let { displayName ->
+      val formatted: String = formatMessage(displayName, emotes)
 
-    if (name != formatted) {
-      e.player.setDisplayName(formatted)
+      if (displayName != formatted) {
+        e.player.setDisplayName(formatted)
+      }
+    }
+
+    e.player.playerListName.let { listName ->
+      val formatted: String = formatMessage(listName, emotes)
+
+      if (listName != formatted) {
+        e.player.setPlayerListName(formatted)
+      }
     }
   }
 
