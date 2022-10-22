@@ -8,7 +8,7 @@ class ChatEmotesSettings(private val plugin: JavaPlugin) {
     get() = plugin.config
 
   fun emoteProvider(): String = config.getString("emote-provider.use")!!
-  fun emotePageSize(): Int = config.getInt("emote-provider.page-size")
+  fun emotePageSize(): Int = config.getInt("page-size")
 
   // local
   fun resourcePackPrompt(): String = config.getString("emote-provider.local.pack.height")!!
