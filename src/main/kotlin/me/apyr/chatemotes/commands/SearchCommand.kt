@@ -13,15 +13,17 @@ class SearchCommand : ChatEmotesCommand {
   }
 
   override fun onTabComplete(sender: CommandSender, args: List<String>): List<String> {
-    val term: String? = args.firstOrNull()?.takeIf { it.isNotEmpty() }
-    val filtered = ChatEmotes.getInstance().emotes.values.let {
-      if (term != null) {
-        it.filter { e -> e.name.contains(term, ignoreCase = true) }
-      } else {
-        it
+    return ChatEmotes.getInstance()
+      .emotes.values
+      .let { emotes ->
+        val term: String? = args.firstOrNull()?.takeIf { it.isNotEmpty() }
+        if (term != null) {
+          emotes.filter { e -> e.name.contains(term, ignoreCase = true) }
+        } else {
+          emotes
+        }
       }
-    }
-    return filtered.map { "${it.name} - ${it.char}" }
+      .map { "${it.name} ${it.char}" }
   }
 
   override fun hasPermission(sender: CommandSender): Boolean = true
