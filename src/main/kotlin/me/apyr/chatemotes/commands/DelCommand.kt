@@ -41,7 +41,7 @@ class DelCommand : ChatEmotesCommand {
 
   override fun onTabComplete(sender: CommandSender, args: List<String>): List<String> {
     return when {
-      args.size == 1 && args[0].isEmpty() -> listOf("<name>")
+      args.size == 1 -> ChatEmotes.getInstance().emotes.values.map { it.name }
       else -> emptyList()
     }
   }
