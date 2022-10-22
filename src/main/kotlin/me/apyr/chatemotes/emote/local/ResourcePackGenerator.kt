@@ -3,6 +3,7 @@ package me.apyr.chatemotes.emote.local
 import com.google.gson.Gson
 import me.apyr.chatemotes.ChatEmotes
 import me.apyr.chatemotes.emote.Emote
+import me.apyr.chatemotes.util.HashUtils.sha1
 import me.apyr.chatemotes.util.StringUtils.toHex
 import java.io.ByteArrayOutputStream
 import java.util.zip.ZipEntry
@@ -11,31 +12,36 @@ import java.util.zip.ZipOutputStream
 internal object ResourcePackGenerator {
   private val gson = Gson()
 
-  // TODO: handle emotes with duplicate names
   fun generate(emotes: List<LocalEmote>): ByteArray {
-    val sortedEmotes = emotes.sortedBy { it.char }
+    val sortedEmotes: List<LocalEmote> = emotes.sortedBy { it.char }
     val out = ByteArrayOutputStream(512 * 1024)
-    val zip = ZipOutputStream(out)
 
-    fun putEntry(path: String, data: ByteArray) {
-      zip.putNextEntry(ZipEntry(path).apply { time = 0 })
-      zip.write(data, 0, data.size)
-      zip.closeEntry()
+    ZipOutputStream(out).use { zip ->
+      fun putEntry(path: String, data: ByteArray) {
+        zip.putNextEntry(ZipEntry(path).apply { time = 0 })
+        zip.write(data, 0, data.size)
+        zip.closeEntry()
+      }
+
+      putEntry("pack.mcmeta", """{"pack":{"description":"ChatEmotes","pack_format":9}}""".toByteArray())
+      putEntry("assets/minecraft/font/default.json", generateFontJson(sortedEmotes).toByteArray())
+
+      // handle duplicate images
+      val zippedTextures: MutableSet<String> = mutableSetOf()
+      for (emote: LocalEmote in sortedEmotes) {
+        val fileName: String = emoteFileName(emote)
+        if (zippedTextures.contains(fileName)) {
+          continue
+        }
+        putEntry("assets/minecraft/textures/font/$fileName", emote.image)
+        zippedTextures.add(fileName)
+      }
     }
-
-    putEntry("pack.mcmeta", """{"pack":{"description":"ChatEmotes","pack_format":9}}""".toByteArray())
-    putEntry("assets/minecraft/font/default.json", generateFontJson(sortedEmotes).toByteArray())
-
-    for (emote: LocalEmote in sortedEmotes) {
-      putEntry("assets/minecraft/textures/font/${emoteFileName(emote)}", emote.image)
-    }
-
-    zip.close()
 
     return out.toByteArray()
   }
 
-  private fun generateFontJson(emotes: List<Emote>): String {
+  private fun generateFontJson(emotes: List<LocalEmote>): String {
     data class Provider(
       val type: String = "bitmap",
       val file: String,
@@ -56,5 +62,5 @@ internal object ResourcePackGenerator {
     return gson.toJson(mapOf("providers" to providers))
   }
 
-  private fun emoteFileName(emote: Emote): String = emote.name.toByteArray().toHex() + ".png"
+  private fun emoteFileName(emote: LocalEmote): String = emote.image.sha1().toHex() + ".png"
 }
