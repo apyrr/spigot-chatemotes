@@ -42,7 +42,13 @@ val fatJar: Jar = task("fatJar", type = Jar::class) {
 }
 
 tasks {
-  "build" {
+  build {
     dependsOn(fatJar)
+  }
+
+  processResources {
+    val buildNumber: Int = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 0
+    inputs.property("buildNumber", buildNumber) // process resources on property change
+    expand("minorVersion" to buildNumber)
   }
 }

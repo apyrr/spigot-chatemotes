@@ -1,7 +1,11 @@
 name: ChatEmotes
-version: 1.0
+version: 1.${minorVersion}
 api-version: 1.19
 main: me.apyr.chatemotes.ChatEmotes
+softdepend: [kotlin-stdlib]
+description: Use custom png-emotes in chat. Based on server resource pack.
+authors: [apyrr, crashmax-dev]
+website: https://github.com/apyrr/spigot-chatemotes
 commands:
   emote:
     description: List and manage chat emotes
