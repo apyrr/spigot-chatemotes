@@ -3,6 +3,9 @@ emote-provider:
   # emote provider is responsible for emote management and resource pack generation
   use: local
 
+  # maximum page size for emote list
+  page-size: 14
+
   # settings for local emote provider
   local:
     # resource pack generator

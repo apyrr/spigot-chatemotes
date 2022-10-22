@@ -13,22 +13,19 @@ import org.bukkit.command.CommandSender
 import kotlin.math.max
 
 class ListCommand : ChatEmotesCommand {
-  private val plugin: ChatEmotes = ChatEmotes.getInstance()
-
   override val name: String = "list"
   override val description: String = "list all emotes"
   override val usage: String = "[page]"
 
-  private val pageSize: Int = 14
-
   override fun onCommand(sender: CommandSender, args: List<String>) {
-    val allEmotes = plugin.emotes.values
+    val allEmotes = ChatEmotes.getInstance().emotes.values
 
     if (allEmotes.isEmpty()) {
       sender.spigot().sendMessage(TextComponent("No emotes yet!").apply { color = ChatColor.GRAY })
       return
     }
 
+    var pageSize: Int = ChatEmotes.getInstance().settings.emotePageSize()
     val currentPage: Int = max(0, (args.getOrNull(0)?.toIntOrNull() ?: 1) - 1)
     val totalPages: Int = allEmotes.size / pageSize
     val emotes: List<Emote> = allEmotes.asSequence().drop(currentPage * pageSize).take(pageSize).toList()
