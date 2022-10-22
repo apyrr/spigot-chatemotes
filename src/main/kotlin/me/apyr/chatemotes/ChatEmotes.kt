@@ -26,7 +26,7 @@ class ChatEmotes : JavaPlugin() {
     instance = this
   }
 
-  val settings: ChatEmotesSettings = ChatEmotesSettings(config)
+  val settings: ChatEmotesSettings = ChatEmotesSettings(this)
 
   private val commands: Map<String, ChatEmotesCommand> = listOf(
     ListCommand(),

@@ -1,8 +1,12 @@
 package me.apyr.chatemotes
 
 import org.bukkit.configuration.file.FileConfiguration
+import org.bukkit.plugin.java.JavaPlugin
 
-class ChatEmotesSettings(private val config: FileConfiguration) {
+class ChatEmotesSettings(private val plugin: JavaPlugin) {
+  private val config: FileConfiguration
+    get() = plugin.config
+
   fun emoteProvider(): String = config.getString("emote-provider.use")!!
   fun emotePageSize(): Int = config.getInt("emote-provider.page-size")
 
