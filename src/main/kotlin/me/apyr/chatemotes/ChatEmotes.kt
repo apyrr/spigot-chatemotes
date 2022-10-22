@@ -159,7 +159,10 @@ class ChatEmotes : JavaPlugin() {
 
       // send all commands
       if (subcommandName == null) {
-        for (subcommand in commands.values.filter { !it.isShadow }) {
+        val availableCommands: List<ChatEmotesCommand> = commands.values
+          .filter { !it.isShadow && it.hasPermission(sender) }
+
+        for (subcommand in availableCommands) {
           val usage: String = subcommand.usage?.let { " $it" } ?: ""
           val cmd = TextComponent("/$label ${subcommand.name}${usage}").apply {
             color = ChatColor.GRAY
@@ -175,7 +178,15 @@ class ChatEmotes : JavaPlugin() {
         return true
       }
 
-      val subcommand = commands[subcommandName] ?: return true
+      val subcommand: ChatEmotesCommand = commands[subcommandName] ?: return true
+
+      if (!subcommand.hasPermission(sender)) {
+        sender.spigot().sendMessage(
+          TextComponent("Not enough permissions.").apply { color = ChatColor.GRAY }
+        )
+        return true
+      }
+
       try {
         subcommand.onCommand(sender, args.drop(1))
       } catch (_: InvalidCommandArgumentException) {
@@ -183,6 +194,7 @@ class ChatEmotes : JavaPlugin() {
           TextComponent("Usage: /$label $subcommandName ${subcommand.usage}").apply { color = ChatColor.GRAY }
         )
       }
+
       return true
     }
 

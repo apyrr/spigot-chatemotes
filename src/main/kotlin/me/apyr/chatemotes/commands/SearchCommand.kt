@@ -13,9 +13,15 @@ class SearchCommand : ChatEmotesCommand {
   }
 
   override fun onTabComplete(sender: CommandSender, args: List<String>): List<String> {
-    return ChatEmotes.getInstance().emotes.values.map {
-      "${it.name} - ${it.char}"
+    val term: String? = args.firstOrNull()?.takeIf { it.isNotEmpty() }
+    val filtered = ChatEmotes.getInstance().emotes.values.let {
+      if (term != null) {
+        it.filter { e -> e.name.contains(term, ignoreCase = true) }
+      } else {
+        it
+      }
     }
+    return filtered.map { "${it.name} - ${it.char}" }
   }
 
   override fun hasPermission(sender: CommandSender): Boolean = true
