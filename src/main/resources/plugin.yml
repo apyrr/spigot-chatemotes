@@ -11,3 +11,7 @@ commands:
     description: List and manage chat emotes
     aliases: [e, em]
     usage: /<command>
+permissions:
+  chatemotes.manage:
+    description: Allows refreshing resource pack, adding & deleting emotes
+    default: op
