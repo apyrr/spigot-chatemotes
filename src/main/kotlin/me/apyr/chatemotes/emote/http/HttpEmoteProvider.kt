@@ -28,7 +28,8 @@ class HttpEmoteProvider : EmoteProvider {
     return httpClient
       .send(request, HttpResponse.BodyHandlers.ofString())
       .checkErrors()
-      .let { gson.fromJson(it.body()) }
+      .let { gson.fromJson<List<HttpEmote>>(it.body()) }
+      .associateBy { it.name }
   }
 
   override fun addEmote(name: String, url: String) {
