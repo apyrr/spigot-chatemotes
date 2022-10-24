@@ -3,6 +3,7 @@ name: Build ChatEmotes
 on:
   push:
     branches: [ "main" ]
+    paths: [ "**.kt", "**.kts", "**.yml" ]
 
 jobs:
   build:
