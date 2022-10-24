@@ -42,7 +42,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               draft: false,
-              generate_release_notes: true,
               prerelease: true,
               tag_name: 'v${{ steps.plugin-version.outputs.PLUGIN_VERSION }}'
             });
