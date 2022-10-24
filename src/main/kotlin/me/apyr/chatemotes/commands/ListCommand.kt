@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.command.CommandSender
+import kotlin.math.ceil
 import kotlin.math.max
 
 class ListCommand : ChatEmotesCommand {
@@ -25,13 +26,13 @@ class ListCommand : ChatEmotesCommand {
       return
     }
 
-    var pageSize: Int = ChatEmotes.getInstance().settings.emotePageSize()
-    val currentPage: Int = max(0, (args.getOrNull(0)?.toIntOrNull() ?: 1) - 1)
-    val totalPages: Int = allEmotes.size / pageSize
-    val emotes: List<Emote> = allEmotes.asSequence().drop(currentPage * pageSize).take(pageSize).toList()
+    val pageSize: Int = ChatEmotes.getInstance().settings.emotePageSize()
+    val currentPageIndex: Int = max(0, (args.getOrNull(0)?.toIntOrNull() ?: 1) - 1)
+    val totalPages: Int = ceil(allEmotes.size.toFloat() / pageSize).toInt()
+    val emotes: List<Emote> = allEmotes.asSequence().drop(currentPageIndex * pageSize).take(pageSize).toList()
 
     if (emotes.isEmpty()) {
-      return
+      return sender.spigot().sendMessage(TextComponent("This page does not exists").apply { color = ChatColor.GRAY })
     }
 
     emotes
@@ -75,24 +76,24 @@ class ListCommand : ChatEmotesCommand {
       *ComponentBuilder()
         .apply {
           append("\n")
-          if (currentPage >= 1) {
+          if (currentPageIndex > 0) {
             append("←  ")
               .color(ChatColor.GRAY)
               .bold(true)
-              .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote list $currentPage"))
+              .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote list $currentPageIndex"))
               .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click too see previous page")))
           } else {
             append("    ")
           }
 
-          append("[page ${currentPage + 1} / ${totalPages + 1}]", ComponentBuilder.FormatRetention.NONE)
+          append("[page ${currentPageIndex + 1} / $totalPages]", ComponentBuilder.FormatRetention.NONE)
             .color(ChatColor.GRAY)
 
-          if (currentPage < totalPages) {
+          if (currentPageIndex + 1 < totalPages) {
             append("  →")
               .color(ChatColor.GRAY)
               .bold(true)
-              .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote list ${currentPage + 2}"))
+              .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote list ${currentPageIndex + 2}"))
               .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click too see next page")))
           }
         }
