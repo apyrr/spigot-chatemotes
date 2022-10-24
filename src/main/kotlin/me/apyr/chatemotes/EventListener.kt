@@ -61,7 +61,9 @@ class EventListener : Listener {
 
     val meta: BookMeta = e.newBookMeta
     meta.pages.forEachIndexed { index, s ->
-      val formatted: String = formatSignOrBookLine(s, emotes)
+      val formatted: String = s
+        .split("\n")
+        .joinToString("\n") { line -> formatSignOrBookLine(line, emotes) }
       if (s != formatted) {
         meta.setPage(index + 1, formatted)
       }
@@ -96,8 +98,11 @@ class EventListener : Listener {
     var formatted: String = input
 
     for (emote: Emote in emotes.values) {
-      if (formatted.contains(emote.char)) {
-        formatted = formatted.replace(emote.char, "${ChatColor.WHITE}${emote.char}${ChatColor.RESET}")
+      // don't replace existing emotes
+      val pattern = Regex("(?<!${ChatColor.WHITE})${emote.char}(?!${ChatColor.RESET})")
+      if (formatted.contains(pattern)) {
+        formatted = formatted.replace(pattern, "${ChatColor.WHITE}${emote.char}${ChatColor.RESET}")
+        println(formatted)
       }
     }
 
