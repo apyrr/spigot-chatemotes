@@ -44,7 +44,6 @@ jobs:
               draft: false,
               generate_release_notes: true,
               prerelease: true,
-              name: 'Build #' + process.env.GITHUB_RUN_NUMBER,
               tag_name: 'v${{ steps.plugin-version.outputs.PLUGIN_VERSION }}'
             });
 
