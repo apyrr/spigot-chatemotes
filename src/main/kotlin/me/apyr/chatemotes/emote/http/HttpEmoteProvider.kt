@@ -33,15 +33,21 @@ class HttpEmoteProvider : EmoteProvider {
   }
 
   override fun addEmote(name: String, url: String) {
-    val body = gson.toJson(mapOf("name" to name, "url" to url))
-    val request: HttpRequest = request(settings.httpUrlsEmotesAdd()).PUT(BodyPublishers.ofString(body)).build()
+    val body: String = gson.toJson(mapOf("name" to name, "url" to url))
+    val request: HttpRequest = request(settings.httpUrlsEmotesAdd())
+      .setHeader("Content-Type", "application/json;charset=UTF-8")
+      .PUT(BodyPublishers.ofString(body))
+      .build()
     httpClient
       .send(request, HttpResponse.BodyHandlers.ofString())
       .checkErrors()
   }
 
   override fun deleteEmote(name: String): Boolean {
-    val request: HttpRequest = request(settings.httpUrlsEmotesDelete().replace("{name}", name)).DELETE().build()
+    val request: HttpRequest = request(settings.httpUrlsEmotesDelete().replace("{name}", name))
+      .setHeader("Content-Type", "application/json;charset=UTF-8")
+      .DELETE()
+      .build()
     httpClient
       .send(request, HttpResponse.BodyHandlers.ofString())
       .checkErrors()
@@ -50,8 +56,9 @@ class HttpEmoteProvider : EmoteProvider {
   }
 
   override fun renameEmote(old: String, new: String): Boolean {
-    val body = gson.toJson(mapOf("name" to new))
+    val body: String = gson.toJson(mapOf("name" to new))
     val request: HttpRequest = request(settings.httpUrlsEmotesRename().replace("{name}", old))
+      .setHeader("Content-Type", "application/json;charset=UTF-8")
       .POST(BodyPublishers.ofString(body))
       .build()
     httpClient
