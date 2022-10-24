@@ -20,7 +20,7 @@ class HttpEmoteProvider : EmoteProvider {
   private val httpClient: HttpClient = HttpClient
     .newBuilder()
     .connectTimeout(Duration.ofSeconds(2))
-    .version(HttpClient.Version.HTTP_1_1) // avoid GOAWAY errors (TODO: investigate)
+    .version(HttpClient.Version.HTTP_1_1) // workaround for GOAWAY errors (TODO: investigate)
     .build()
   private val gson = GsonBuilder().create()
 
@@ -46,7 +46,6 @@ class HttpEmoteProvider : EmoteProvider {
 
   override fun deleteEmote(name: String): Boolean {
     val request: HttpRequest = request(settings.httpUrlsEmotesDelete().replace("{name}", name))
-      .setHeader("Content-Type", "application/json;charset=UTF-8")
       .DELETE()
       .build()
     httpClient
