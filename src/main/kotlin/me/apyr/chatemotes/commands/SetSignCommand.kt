@@ -24,7 +24,8 @@ class SetSignCommand : ChatEmotesCommand {
     val line: Int = (checkArgument(args.getOrNull(0)).toIntOrNull() ?: 1)
       .coerceAtLeast(1)
       .coerceAtMost(4)
-    val text: String = checkArgument(args.getOrNull(1))
+    checkArgument(args.getOrNull(1))
+    val text: String = args.drop(1).joinToString(" ")
 
     val sign: Block = sender.getTargetBlock(null, 5)
     val state: BlockState = sign.state
