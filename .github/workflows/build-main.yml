@@ -28,6 +28,10 @@ jobs:
       - name: Execute Gradle build
         run: ./gradlew build
 
+      - name: Save plugin version
+        run: echo "PLUGIN_VERSION=$(./gradlew -q printPluginVersion)" >> $GITHUB_OUTPUT
+        id: plugin-version
+
       - name: Create release
         uses: actions/github-script@v6
         with:
@@ -40,7 +44,8 @@ jobs:
               draft: false,
               generate_release_notes: true,
               prerelease: true,
-              tag_name: 'v1.' + process.env.GITHUB_RUN_NUMBER,
+              name: 'Build #' + process.env.GITHUB_RUN_NUMBER,
+              tag_name: 'v${{ steps.plugin-version.outputs.PLUGIN_VERSION }}'
             });
 
             const uploadAsset = (name, path) => github.rest.repos.uploadReleaseAsset({

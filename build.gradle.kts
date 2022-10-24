@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "me.apyr"
-version = "1.0"
+version = "1.0-SNAPSHOT"
 
 repositories {
   mavenCentral()
@@ -41,14 +41,25 @@ val fatJar: Jar = task("fatJar", type = Jar::class) {
   with(tasks.jar.get() as CopySpec)
 }
 
+task("printPluginVersion") {
+  println(getPluginVersion())
+}
+
 tasks {
   build {
     dependsOn(fatJar)
   }
 
   processResources {
-    val buildNumber: Int = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 0
-    inputs.property("buildNumber", buildNumber) // process resources on property change
-    expand("minorVersion" to buildNumber)
+    val pluginVersion: String = getPluginVersion()
+    inputs.property("pluginVersion", pluginVersion) // process resources on property change
+    expand("pluginVersion" to pluginVersion)
   }
+}
+
+fun getPluginVersion(): String {
+  val projectVersion: String = project.version.toString()
+  return System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()
+    ?.let { run -> projectVersion.replace("-SNAPSHOT", "-dev$run") }
+    ?: projectVersion
 }

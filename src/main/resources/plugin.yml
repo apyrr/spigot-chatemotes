@@ -1,5 +1,5 @@
 name: ChatEmotes
-version: 1.${minorVersion}
+version: ${pluginVersion}
 api-version: 1.19
 main: me.apyr.chatemotes.ChatEmotes
 softdepend: [kotlin-stdlib]
