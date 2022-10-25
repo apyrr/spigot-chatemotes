@@ -49,7 +49,14 @@ class RenameCommand : ChatEmotesCommand {
 
   override fun onTabComplete(sender: CommandSender, args: List<String>): List<String> {
     return when {
-      args.size == 1 && args[0].isEmpty() -> ChatEmotes.getInstance().emotes.values.map { it.name }
+      args.size == 1 -> ChatEmotes.getInstance().emotes.values.let { emotes ->
+        val term: String? = args.firstOrNull()?.takeIf { it.isNotEmpty() }
+        if (term != null) {
+          emotes.filter { e -> e.name.contains(term, ignoreCase = true) }
+        } else {
+          emotes
+        }
+      }.map { it.name }
       args.size == 2 && args[1].isEmpty() -> listOf("<new>")
       else -> emptyList()
     }

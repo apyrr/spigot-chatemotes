@@ -51,8 +51,7 @@ class EventListener : Listener {
       return
     }
 
-    val emotes: Map<String, Emote> = plugin.emotes.takeIf { it.isNotEmpty() } ?: return
-    e.message = formatMessage(e.message, emotes)
+    e.message = formatMessage(e.message, plugin.emotes.takeIf { it.isNotEmpty() } ?: return)
   }
 
   @EventHandler
