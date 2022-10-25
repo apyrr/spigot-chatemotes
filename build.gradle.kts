@@ -41,11 +41,11 @@ val fatJar: Jar = task("fatJar", type = Jar::class) {
   with(tasks.jar.get() as CopySpec)
 }
 
-task("printPluginVersion") {
-  println(getPluginVersion())
-}
-
 tasks {
+  register("printPluginVersion") {
+    println(getPluginVersion())
+  }
+
   build {
     dependsOn(fatJar)
   }
@@ -53,7 +53,10 @@ tasks {
   processResources {
     val pluginVersion: String = getPluginVersion()
     inputs.property("pluginVersion", pluginVersion) // process resources on property change
-    expand("pluginVersion" to pluginVersion)
+
+    filesMatching("plugin.yml") {
+      expand("pluginVersion" to pluginVersion)
+    }
   }
 }
 

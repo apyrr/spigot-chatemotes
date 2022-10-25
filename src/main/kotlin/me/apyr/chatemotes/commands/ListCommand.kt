@@ -26,7 +26,7 @@ class ListCommand : ChatEmotesCommand {
       return
     }
 
-    val pageSize: Int = ChatEmotes.getInstance().settings.emotePageSize()
+    val pageSize: Int = ChatEmotes.getInstance().settings.cmdListPageSize()
     val currentPageIndex: Int = max(0, (args.getOrNull(0)?.toIntOrNull() ?: 1) - 1)
     val totalPages: Int = ceil(allEmotes.size.toFloat() / pageSize).toInt()
     val emotes: List<Emote> = allEmotes.asSequence().drop(currentPageIndex * pageSize).take(pageSize).toList()

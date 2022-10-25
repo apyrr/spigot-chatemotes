@@ -1,5 +1,6 @@
 package me.apyr.chatemotes.emote.local
 
+import me.apyr.chatemotes.exceptions.ChatEmotesException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -45,11 +46,19 @@ object EmoteResolver {
       .GET()
       .build()
 
+    fun check(value: Boolean, lazyMessage: () -> String) {
+      if (!value) {
+        throw EmoteResolveException(lazyMessage())
+      }
+    }
+
     val response: HttpResponse<ByteArray> = http.send(request, HttpResponse.BodyHandlers.ofByteArray())
-    check(response.statusCode() == 200) { "Invalid response code: ${response.statusCode()}" }
-    check(response.body().size <= 256 * 1024) { "Emote is too large (${response.body().size / 1024} KB)" }
+    check(response.statusCode() == 200) { "Invalid response code (${response.statusCode()})" }
+    check(response.body().size <= 256 * 1024) { "Emote is too large (${response.body().size / 1024} KB), 256KB max" }
     check(response.body().take(8).toByteArray().contentEquals(pngMagic)) { "Emote is not a PNG image" }
 
     return response.body()
   }
+
+  private class EmoteResolveException(override val displayMessage: String) : ChatEmotesException()
 }

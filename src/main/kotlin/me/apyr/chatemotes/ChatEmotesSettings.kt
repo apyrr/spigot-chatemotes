@@ -7,8 +7,9 @@ class ChatEmotesSettings(private val plugin: JavaPlugin) {
   private val config: FileConfiguration
     get() = plugin.config
 
+  fun cmdListPageSize(): Int = config.getInt("page-size")
+  fun strictEmoteNames(): Boolean = config.getBoolean("strict-emote-names")
   fun emoteProvider(): String = config.getString("emote-provider.use")!!
-  fun emotePageSize(): Int = config.getInt("page-size")
 
   // local
   fun resourcePackPrompt(): String = config.getString("emote-provider.local.pack.height")!!
@@ -31,4 +32,8 @@ class ChatEmotesSettings(private val plugin: JavaPlugin) {
   fun httpUrlsEmotesRename(): String = config.getString("emote-provider.http.urls.emotes.rename")!!
   fun httpUrlsPackDownload(): String = config.getString("emote-provider.http.urls.pack.download")!!
   fun httpUrlsPackHash(): String = config.getString("emote-provider.http.urls.pack.hash")!!
+
+  companion object {
+    val STRICT_EMOTE_NAME_PATTERN = Regex("""[\w:]""")
+  }
 }

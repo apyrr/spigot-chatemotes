@@ -6,6 +6,7 @@ import me.apyr.chatemotes.emote.EmoteProvider
 import me.apyr.chatemotes.emote.ResourcePackInfo
 import me.apyr.chatemotes.emote.http.HttpEmoteProvider
 import me.apyr.chatemotes.emote.local.LocalEmoteProvider
+import me.apyr.chatemotes.exceptions.ChatEmotesException
 import me.apyr.chatemotes.exceptions.InvalidCommandArgumentException
 import me.apyr.chatemotes.util.StringUtils.toHex
 import net.md_5.bungee.api.ChatColor
@@ -192,6 +193,14 @@ class ChatEmotes : JavaPlugin() {
       } catch (_: InvalidCommandArgumentException) {
         sender.spigot().sendMessage(
           TextComponent("Usage: /$label $subcommandName ${subcommand.usage}").apply { color = ChatColor.GRAY }
+        )
+      } catch (e: ChatEmotesException) {
+        sender.spigot().sendMessage(
+          *ComponentBuilder("Error: ")
+            .color(ChatColor.RED)
+            .append(e.displayMessage ?: "${e::class.simpleName}")
+            .color(ChatColor.GRAY)
+            .create()
         )
       }
 

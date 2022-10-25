@@ -1,8 +1,9 @@
 package me.apyr.chatemotes.commands
 
-import me.apyr.chatemotes.ChatEmotes
-import me.apyr.chatemotes.ChatEmotesCommand
+import me.apyr.chatemotes.*
 import me.apyr.chatemotes.ChatEmotesPermission
+import me.apyr.chatemotes.ChatEmotesSettings.Companion.STRICT_EMOTE_NAME_PATTERN
+import me.apyr.chatemotes.exceptions.InvalidEmoteNameException
 import me.apyr.chatemotes.hasPermission
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ClickEvent
@@ -18,6 +19,10 @@ class RenameCommand : ChatEmotesCommand {
   override fun onCommand(sender: CommandSender, args: List<String>) {
     val old: String = checkArgument(args.getOrNull(0))
     val new: String = checkArgument(args.getOrNull(1))
+
+    if (ChatEmotes.getInstance().settings.strictEmoteNames() && !STRICT_EMOTE_NAME_PATTERN.matches(new)) {
+      throw InvalidEmoteNameException()
+    }
 
     val success: Boolean = ChatEmotes.getInstance().getEmoteProvider().renameEmote(old, new)
 

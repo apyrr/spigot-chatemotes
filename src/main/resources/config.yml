@@ -1,3 +1,6 @@
+# allowed characters in strict mode are: [\w:]
+strict-emote-names: true
+
 # maximum page size for emote list
 page-size: 14
 
@@ -13,8 +16,10 @@ emote-provider:
       prompt: Chat emotes!
       height: 10
       ascent: 8
+
     # minecraft server hostname override (set to disable auto detection)
     hostname-override: null
+
     # resource pack server
     http.port: 25765
 
