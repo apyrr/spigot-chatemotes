@@ -54,6 +54,7 @@ class ChatEmotes : JavaPlugin() {
   private var lastAnnouncedResourcePackHash: String? = null
 
   override fun onEnable() {
+    saveDefaultConfig()
     config.options().copyDefaults(true)
     saveConfig()
 

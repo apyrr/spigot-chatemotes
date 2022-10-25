@@ -1,6 +1,13 @@
 # allowed characters in strict mode are: [\w:]
 strict-emote-names: true
 
+use-emotes-in:
+  chat: true
+  signs: true
+  books: true
+  anvils: true
+  player-names: true
+
 # maximum page size for emote list
 page-size: 14
 

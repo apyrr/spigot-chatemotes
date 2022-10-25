@@ -15,11 +15,18 @@ import org.bukkit.inventory.meta.ItemMeta
 
 class EventListener : Listener {
 
+  private val plugin: ChatEmotes = ChatEmotes.getInstance()
+  private val settings: ChatEmotesSettings = plugin.settings
+
   @EventHandler
   fun onJoin(e: PlayerJoinEvent) {
     ChatEmotes.getInstance().sendResourcePack(e.player)
 
-    val emotes: Map<String, Emote> = ChatEmotes.getInstance().emotes.takeIf { it.isNotEmpty() } ?: return
+    if (!settings.useEmotesInPlayerNames()) {
+      return
+    }
+
+    val emotes: Map<String, Emote> = plugin.emotes.takeIf { it.isNotEmpty() } ?: return
 
     e.player.displayName.let { displayName ->
       val formatted: String = formatMessage(displayName, emotes)
@@ -40,13 +47,21 @@ class EventListener : Listener {
 
   @EventHandler
   fun onChat(e: AsyncPlayerChatEvent) {
-    val emotes: Map<String, Emote> = ChatEmotes.getInstance().emotes.takeIf { it.isNotEmpty() } ?: return
+    if (!settings.useEmotesInChat()) {
+      return
+    }
+
+    val emotes: Map<String, Emote> = plugin.emotes.takeIf { it.isNotEmpty() } ?: return
     e.message = formatMessage(e.message, emotes)
   }
 
   @EventHandler
   fun onSign(e: SignChangeEvent) {
-    val emotes: Map<String, Emote> = ChatEmotes.getInstance().emotes.takeIf { it.isNotEmpty() } ?: return
+    if (!settings.useEmotesInSigns()) {
+      return
+    }
+
+    val emotes: Map<String, Emote> = plugin.emotes.takeIf { it.isNotEmpty() } ?: return
     e.lines.forEachIndexed { index, s ->
       val formatted: String = formatSignOrBookLine(s, emotes)
       if (s != formatted) {
@@ -57,7 +72,11 @@ class EventListener : Listener {
 
   @EventHandler
   fun onBook(e: PlayerEditBookEvent) {
-    val emotes: Map<String, Emote> = ChatEmotes.getInstance().emotes.takeIf { it.isNotEmpty() } ?: return
+    if (!settings.useEmotesInBooks()) {
+      return
+    }
+
+    val emotes: Map<String, Emote> = plugin.emotes.takeIf { it.isNotEmpty() } ?: return
 
     val meta: BookMeta = e.newBookMeta
     meta.pages.forEachIndexed { index, s ->
@@ -78,7 +97,11 @@ class EventListener : Listener {
 
   @EventHandler
   fun onAnvil(e: PrepareAnvilEvent) {
-    val emotes: Map<String, Emote> = ChatEmotes.getInstance().emotes.takeIf { it.isNotEmpty() } ?: return
+    if (!settings.useEmotesInAnvils()) {
+      return
+    }
+
+    val emotes: Map<String, Emote> = plugin.emotes.takeIf { it.isNotEmpty() } ?: return
 
     val item: ItemStack = e.result ?: return
     val meta: ItemMeta = item.itemMeta ?: return

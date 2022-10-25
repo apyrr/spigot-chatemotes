@@ -9,6 +9,13 @@ class ChatEmotesSettings(private val plugin: JavaPlugin) {
 
   fun cmdListPageSize(): Int = config.getInt("page-size")
   fun strictEmoteNames(): Boolean = config.getBoolean("strict-emote-names")
+
+  fun useEmotesInChat(): Boolean = config.getBoolean("use-emotes-in.chat")
+  fun useEmotesInSigns(): Boolean = config.getBoolean("use-emotes-in.signs")
+  fun useEmotesInBooks(): Boolean = config.getBoolean("use-emotes-in.books")
+  fun useEmotesInAnvils(): Boolean = config.getBoolean("use-emotes-in.anvils")
+  fun useEmotesInPlayerNames(): Boolean = config.getBoolean("use-emotes-in.player-names")
+
   fun emoteProvider(): String = config.getString("emote-provider.use")!!
 
   // local
