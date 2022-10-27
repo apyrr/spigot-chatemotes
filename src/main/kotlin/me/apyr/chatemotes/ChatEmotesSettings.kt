@@ -41,6 +41,6 @@ class ChatEmotesSettings(private val plugin: JavaPlugin) {
   fun httpUrlsPackHash(): String = config.getString("emote-provider.http.urls.pack.hash")!!
 
   companion object {
-    val STRICT_EMOTE_NAME_PATTERN = Regex("""[\w:]""")
+    val STRICT_EMOTE_NAME_PATTERN = Regex("""[\w:()<>]+""")
   }
 }
