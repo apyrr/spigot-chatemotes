@@ -43,7 +43,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               draft: false,
-              prerelease: true,
+              prerelease: false,
               tag_name: 'v${{ steps.plugin-version.outputs.PLUGIN_VERSION }}'
             });
 

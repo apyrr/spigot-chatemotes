@@ -52,7 +52,7 @@ class ListCommand : ChatEmotesCommand {
             .event(ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/emote del ${emote.name}"))
             .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click to delete ${emote.char}")))
             .append(" ", ComponentBuilder.FormatRetention.NONE)
-            .append("✏").color(ChatColor.GRAY)
+            .append("✏").color(ChatColor.GOLD)
             .event(ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/emote rename ${emote.name} "))
             .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click to rename ${emote.char}")))
             .append(" ]  ", ComponentBuilder.FormatRetention.NONE).color(ChatColor.GRAY)
