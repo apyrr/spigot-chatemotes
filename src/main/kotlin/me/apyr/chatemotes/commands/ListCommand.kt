@@ -2,7 +2,9 @@ package me.apyr.chatemotes.commands
 
 import me.apyr.chatemotes.ChatEmotes
 import me.apyr.chatemotes.ChatEmotesCommand
+import me.apyr.chatemotes.ChatEmotesPermission
 import me.apyr.chatemotes.emote.Emote
+import me.apyr.chatemotes.hasPermission
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
@@ -35,13 +37,28 @@ class ListCommand : ChatEmotesCommand {
       return sender.spigot().sendMessage(TextComponent("This page does not exists").apply { color = ChatColor.GRAY })
     }
 
+    val canManage: Boolean = sender.hasPermission(ChatEmotesPermission.MANAGE)
+
     emotes
       .foldIndexed(ComponentBuilder()) { index, builder, emote ->
         if (index == 0) {
           builder.append("\n")
         }
+        builder.append("\n", ComponentBuilder.FormatRetention.NONE)
+        if (canManage) {
+          builder
+            .append("[ ").color(ChatColor.GRAY)
+            .append("x", ComponentBuilder.FormatRetention.NONE).color(ChatColor.RED)
+            .event(ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/emote del ${emote.name}"))
+            .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click to delete ${emote.char}")))
+            .append(" ", ComponentBuilder.FormatRetention.NONE)
+            .append("✏").color(ChatColor.GRAY)
+            .event(ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/emote rename ${emote.name} "))
+            .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click to rename ${emote.char}")))
+            .append(" ]  ", ComponentBuilder.FormatRetention.NONE).color(ChatColor.GRAY)
+        }
         builder
-          .append("\n${emote.char} ", ComponentBuilder.FormatRetention.NONE)
+          .append("${emote.char} ", ComponentBuilder.FormatRetention.NONE)
           .append("- ${emote.name}").color(ChatColor.GRAY)
           .event(ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, emote.char))
           .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("Click to copy ${emote.char}")))
@@ -101,6 +118,12 @@ class ListCommand : ChatEmotesCommand {
     )
   }
 
-  override fun onTabComplete(sender: CommandSender, args: List<String>): List<String> = emptyList()
+  override fun onTabComplete(sender: CommandSender, args: List<String>): List<String> {
+    return when {
+      args.size == 1 && args[0].isEmpty() -> listOf("<page>")
+      else -> emptyList()
+    }
+  }
+
   override fun hasPermission(sender: CommandSender): Boolean = true
 }
