@@ -1,4 +1,4 @@
-# allowed characters in strict mode are: [\w:]
+# allowed characters in strict mode are: [\w:()<>]
 strict-emote-names: true
 
 use-emotes-in:
@@ -30,7 +30,7 @@ emote-provider:
     # resource pack server
     http.port: 25765
 
-  # settings for http emote provider
+  # http emote provider for developers
   http:
     headers:
       user-agent: chatemotes/1.0

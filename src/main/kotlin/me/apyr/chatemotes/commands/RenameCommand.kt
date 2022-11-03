@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender
 class RenameCommand : ChatEmotesCommand {
   override val name: String = "rename"
   override val description: String = "rename an emote"
-  override val usage: String = "<old> <new>"
+  override val usage: String = "<old name> <new name>"
 
   override fun onCommand(sender: CommandSender, args: List<String>) {
     val old: String = checkArgument(args.getOrNull(0))
@@ -57,7 +57,7 @@ class RenameCommand : ChatEmotesCommand {
           emotes
         }
       }.map { it.name }
-      args.size == 2 && args[1].isEmpty() -> listOf("<new>")
+      args.size == 2 && args[1].isEmpty() -> listOf("<new name>")
       else -> emptyList()
     }
   }
