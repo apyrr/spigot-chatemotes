@@ -14,7 +14,7 @@ import org.bukkit.event.block.SignChangeEvent
 class SetSignCommand : ChatEmotesCommand {
   override val name: String = "setsign"
   override val description: String = "modify a line on the sign"
-  override val usage: String = "<1-4> <text>"
+  override val usage: String = "<1-4> [text]"
 
   override fun onCommand(sender: CommandSender, args: List<String>) {
     if (sender !is Player) {
@@ -24,7 +24,6 @@ class SetSignCommand : ChatEmotesCommand {
     val line: Int = (checkArgument(args.getOrNull(0)).toIntOrNull() ?: 1)
       .coerceAtLeast(1)
       .coerceAtMost(4)
-    checkArgument(args.getOrNull(1))
     val text: String = args.drop(1).joinToString(" ")
 
     val sign: Block = sender.getTargetBlock(null, 5)
@@ -55,7 +54,7 @@ class SetSignCommand : ChatEmotesCommand {
   override fun onTabComplete(sender: CommandSender, args: List<String>): List<String> {
     return when {
       args.size == 1 && args[0].isEmpty() -> listOf("<1-4>")
-      args.size == 2 && args[1].isEmpty() -> listOf("<text>")
+      args.size == 2 && args[1].isEmpty() -> listOf("[text]")
       else -> emptyList()
     }
   }
