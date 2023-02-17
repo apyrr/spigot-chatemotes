@@ -140,12 +140,14 @@ class ChatEmotes : JavaPlugin() {
   fun sendResourcePack(player: Player) {
     val info: ResourcePackInfo = resourcePackInfo ?: return
     player.setResourcePack(info.url, info.sha1, settings.resourcePackPrompt())
+    logger.info("Sending resource pack to player ${player.name}: ${info.url}")
   }
 
   fun sendResourcePack() {
     val info: ResourcePackInfo = resourcePackInfo ?: return
     for (player: Player in Bukkit.getOnlinePlayers()) {
       player.setResourcePack(info.url, info.sha1, settings.resourcePackPrompt())
+      logger.info("Sending resource pack to player ${player.name}: ${info.url}")
     }
   }
 
