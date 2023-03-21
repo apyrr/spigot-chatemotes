@@ -22,7 +22,7 @@ class ChatEmotesSettings(private val plugin: JavaPlugin) {
   fun resourcePackPrompt(): String = config.getString("emote-provider.local.pack.height")!!
   fun resourcePackHeight(): Int = config.getInt("emote-provider.local.pack.height")
   fun resourcePackAscent(): Int = config.getInt("emote-provider.local.pack.ascent")
-  fun hostnameOverride(): String? = config.getString("emote-provider.local.hostname-override")
+  fun hostnameOverride(): String? = config.getString("emote-provider.local.hostname-override")?.ifEmpty { null }
   fun httpPort(): Int = config.getInt("emote-provider.local.http.port")
 
   // remote

@@ -25,7 +25,7 @@ emote-provider:
       ascent: 8
 
     # minecraft server hostname override (set to disable auto detection)
-    hostname-override: null
+    hostname-override: ''
 
     # resource pack server
     http.port: 25765
