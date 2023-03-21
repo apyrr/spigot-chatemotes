@@ -84,10 +84,14 @@ class LocalEmoteProvider : EmoteProvider {
   override fun getResourcePackInfo(): ResourcePackInfo? {
     val emotes = getEmotes()
     if (emotes.isEmpty()) {
+      ChatEmotes.getLogger().info("Failed to generate resource pack: no emotes are present")
       return null
     }
 
-    val hostname: String = publicServerHostname ?: return null
+    val hostname: String = publicServerHostname ?: return let {
+      ChatEmotes.getLogger().info("Failed to generate resource pack: unknown public server hostname")
+      null
+    }
     val port: Int = ChatEmotes.getInstance().settings.httpPort()
 
     val pack: ByteArray = ResourcePackGenerator.generate(emotes.values.toList())
