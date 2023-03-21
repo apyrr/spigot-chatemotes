@@ -25,6 +25,7 @@ class LocalEmoteProvider : EmoteProvider {
   private val loginListener: LoginListener = LoginListener()
 
   override fun getEmotes(): Map<String, LocalEmote> {
+    store.saveDefault()
     store.reload()
     return store.getFileConfiguration()
       .getMapList("emotes")
