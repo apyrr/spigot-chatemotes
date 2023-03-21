@@ -129,6 +129,12 @@ class LocalEmoteProvider : EmoteProvider {
   companion object {
     // this hostname is used to serve the resource pack
     private var publicServerHostname: String? = ChatEmotes.getInstance().settings.hostnameOverride()
+
+    init {
+      if (publicServerHostname != null) {
+        ChatEmotes.getLogger().info("Using public server hostname from config: $publicServerHostname")
+      }
+    }
   }
 
   private inner class LoginListener : Listener {
