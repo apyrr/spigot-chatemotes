@@ -115,7 +115,7 @@ class LocalEmoteProvider : EmoteProvider {
     PlayerLoginEvent.getHandlerList().unregister(loginListener)
   }
 
-  private fun saveToFile(emotes: Collection<LocalEmote>) {
+  private fun saveToFile(emotes: Collection<LocalEmote>): Unit = synchronized(this) {
     val map: List<Map<String, String>> = emotes.map { emote ->
       mapOf(
         "name" to emote.name,

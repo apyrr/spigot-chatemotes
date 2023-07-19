@@ -10,6 +10,7 @@ import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
 class AddCommand : ChatEmotesCommand {
@@ -25,20 +26,25 @@ class AddCommand : ChatEmotesCommand {
       throw InvalidEmoteNameException()
     }
 
-    ChatEmotes.getInstance().getEmoteProvider().addEmote(name, url)
-    sender.spigot().sendMessage(
-      *ComponentBuilder("Emote successfully added. ")
-        .color(ChatColor.GREEN)
-        .append(
-          TextComponent("Click here").apply {
-            isUnderlined = true
-            clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote refresh")
-          }
+    Bukkit.getScheduler().runTaskAsynchronously(ChatEmotes.getInstance(), Runnable {
+      ChatEmotes.getInstance().getEmoteProvider().addEmote(name, url)
+
+      Bukkit.getScheduler().runTask(ChatEmotes.getInstance(), Runnable {
+        sender.spigot().sendMessage(
+          *ComponentBuilder("Emote successfully added. ")
+            .color(ChatColor.GREEN)
+            .append(
+              TextComponent("Click here").apply {
+                isUnderlined = true
+                clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emote refresh")
+              }
+            )
+            .append(" to announce the resource pack", ComponentBuilder.FormatRetention.NONE)
+            .color(ChatColor.GREEN)
+            .create()
         )
-        .append(" to announce the resource pack", ComponentBuilder.FormatRetention.NONE)
-        .color(ChatColor.GREEN)
-        .create()
-    )
+      })
+    })
   }
 
   override fun onTabComplete(sender: CommandSender, args: List<String>): List<String> {
